@@ -9,9 +9,12 @@ import (
 
 func main() {
 	config := configs.LoadConfig()
-	_ = db.NewDb(config)
+	_ = db.NewDb(config.Db.Dsn)
+
 	authDeps := handlers.AuthServerDeps{Config: config}
 	authServer := handlers.NewAuthServer(authDeps)
 
-	delivery.StartServer(authServer)
+	linkServer := handlers.NewLinkServer()
+
+	delivery.StartServer(authServer, linkServer)
 }

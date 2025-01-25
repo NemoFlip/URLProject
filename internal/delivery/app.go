@@ -6,9 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func StartServer(authServer *handlers.AuthServer) {
+func StartServer(authServer *handlers.AuthServer, linkServer *handlers.LinkServer) {
 	r := gin.Default()
-	router.InitRouting(r, authServer)
+	router.InitRouting(r, authServer, linkServer)
 
 	if err := r.Run(":8080"); err != nil {
 		panic("unable to run server on port 8080")
