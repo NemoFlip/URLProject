@@ -1,0 +1,8 @@
+basePath: /
+host: localhost:8080
+info:
+  contact: {}
+  description: Project for shorting the urls
+  title: URLProject
+paths: {}
+swagger: "2.0"

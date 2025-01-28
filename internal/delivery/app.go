@@ -4,10 +4,18 @@ import (
 	"URLProject/internal/delivery/handlers"
 	"URLProject/internal/delivery/router"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title URLProject
+// @description Project for shorting the URLS
+// @host localhost:8080
+// @BasePath /
 func StartServer(authServer *handlers.AuthServer, linkServer *handlers.LinkServer) {
 	r := gin.Default()
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.InitRouting(r, authServer, linkServer)
 
 	if err := r.Run(":8080"); err != nil {
