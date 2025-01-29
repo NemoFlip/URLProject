@@ -1,8 +1,102 @@
 basePath: /
+definitions:
+  payload.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  payload.LoginResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  payload.RegisterRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  payload.RegisterResponse:
+    properties:
+      token:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
-  description: Project for shorting the urls
+  description: Project for shorting the URLS
   title: URLProject
-paths: {}
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login the user
+      parameters:
+      - description: user's credentials
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/payload.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user is logged in successfully
+          schema:
+            $ref: '#/definitions/payload.LoginResponse'
+        "400":
+          description: bad credentials
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Login
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register new user
+      parameters:
+      - description: user's info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/payload.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: user is registered successfully
+          schema:
+            $ref: '#/definitions/payload.RegisterResponse'
+        "400":
+          description: bad credentials
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Register
+      tags:
+      - Auth
 swagger: "2.0"
