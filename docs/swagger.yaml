@@ -1,5 +1,14 @@
 basePath: /
 definitions:
+  payload.LinkCreateRequest:
+    properties:
+      url:
+        type: string
+    required:
+    - url
+    type: object
+  payload.LinkResponse:
+    type: object
   payload.LoginRequest:
     properties:
       email:
@@ -99,4 +108,108 @@ paths:
       summary: Register
       tags:
       - Auth
+  /link:
+    post:
+      consumes:
+      - application/json
+      description: Create the link
+      parameters:
+      - description: link's credentials
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/payload.LinkCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: linke is created successfully
+          schema:
+            $ref: '#/definitions/payload.LinkResponse'
+        "400":
+          description: bad credentials
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Create
+      tags:
+      - Link
+  /link/{hash}:
+    get:
+      consumes:
+      - application/json
+      description: Get the link by hash
+      parameters:
+      - description: URL's Hash
+        in: path
+        name: hash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: linke was found
+          schema:
+            $ref: '#/definitions/payload.LinkResponse'
+        "400":
+          description: bad credentials
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: GoTo
+      tags:
+      - Link
+  /link/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete the link by id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: linke is deleted successfully
+          schema:
+            $ref: '#/definitions/payload.LinkResponse'
+        "400":
+          description: bad credentials
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Delete
+      tags:
+      - Link
+    patch:
+      consumes:
+      - application/json
+      description: Update the link by id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: linke is updated successfully
+          schema:
+            $ref: '#/definitions/payload.LinkResponse'
+        "400":
+          description: bad credentials
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Update
+      tags:
+      - Link
 swagger: "2.0"

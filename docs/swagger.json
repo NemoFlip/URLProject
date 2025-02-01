@@ -99,9 +99,181 @@
                     }
                 }
             }
+        },
+        "/link": {
+            "post": {
+                "description": "Create the link",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Link"
+                ],
+                "summary": "Create",
+                "parameters": [
+                    {
+                        "description": "link's credentials",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/payload.LinkCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "linke is created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/payload.LinkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "bad credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/link/{hash}": {
+            "get": {
+                "description": "Get the link by hash",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Link"
+                ],
+                "summary": "GoTo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "URL's Hash",
+                        "name": "hash",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "linke was found",
+                        "schema": {
+                            "$ref": "#/definitions/payload.LinkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "bad credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/link/{id}": {
+            "delete": {
+                "description": "Delete the link by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Link"
+                ],
+                "summary": "Delete",
+                "responses": {
+                    "200": {
+                        "description": "linke is deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/payload.LinkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "bad credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update the link by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Link"
+                ],
+                "summary": "Update",
+                "responses": {
+                    "200": {
+                        "description": "linke is updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/payload.LinkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "bad credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "payload.LinkCreateRequest": {
+            "type": "object",
+            "required": [
+                "url"
+            ],
+            "properties": {
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "payload.LinkResponse": {
+            "type": "object"
+        },
         "payload.LoginRequest": {
             "type": "object",
             "required": [

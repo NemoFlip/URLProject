@@ -10,7 +10,7 @@ func RegisterLinkRoutes(r *gin.Engine, linkServer *handlers.LinkServer) {
 	{
 		linkGroup.POST("", linkServer.Create)
 		linkGroup.PATCH("/:id", linkServer.Update)
-		linkGroup.DELETE("", linkServer.Delete)
+		linkGroup.DELETE("/:id", linkServer.Delete)
 		linkGroup.GET("/:hash", linkServer.GoTo)
 	}
 }

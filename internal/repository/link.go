@@ -20,3 +20,12 @@ func (lr *LinkRepository) Create(link *entity.Link) error {
 	}
 	return nil
 }
+
+func (lr *LinkRepository) Get(hash string) (*entity.Link, error) {
+	var outputLink entity.Link
+	result := lr.database.DB.First(&outputLink, "hash = ?", hash)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &outputLink, nil
+}
