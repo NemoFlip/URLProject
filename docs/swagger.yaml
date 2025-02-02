@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   payload.LinkCreateRequest:
     properties:
@@ -42,7 +41,6 @@ definitions:
       token:
         type: string
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: Project for shorting the URLS
@@ -172,6 +170,12 @@ paths:
       consumes:
       - application/json
       description: Delete the link by id
+      parameters:
+      - description: URL's id
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -194,6 +198,12 @@ paths:
       consumes:
       - application/json
       description: Update the link by id
+      parameters:
+      - description: URL's id
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -209,7 +219,14 @@ paths:
           description: internal server error
           schema:
             type: string
+      security:
+      - BearerAuth: []
       summary: Update
       tags:
       - Link
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

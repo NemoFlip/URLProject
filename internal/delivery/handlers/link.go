@@ -82,6 +82,8 @@ func (ls *LinkServer) GoTo(ctx *gin.Context) {
 // @Tags Link
 // @Accept json
 // @Produce json
+// @Security BearerAuth
+// @Param id path int true "URL's id"
 // @Success 200 {object} payload.LinkResponse "linke is updated successfully"
 // @Failure 400 {object} string "bad credentials"
 // @Failure 500 {object} string "internal server error"
@@ -123,6 +125,7 @@ func (ls *LinkServer) Update(ctx *gin.Context) {
 // @Tags Link
 // @Accept json
 // @Produce json
+// @Param id path int true "URL's id"
 // @Success 200 {object} payload.LinkResponse "linke is deleted successfully"
 // @Failure 400 {object} string "bad credentials"
 // @Failure 500 {object} string "internal server error"

@@ -210,6 +210,15 @@ const docTemplate = `{
                     "Link"
                 ],
                 "summary": "Delete",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "URL's id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "linke is deleted successfully",
@@ -232,6 +241,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update the link by id",
                 "consumes": [
                     "application/json"
@@ -243,6 +257,15 @@ const docTemplate = `{
                     "Link"
                 ],
                 "summary": "Update",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "URL's id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "linke is updated successfully",
@@ -331,14 +354,21 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "",
-	Host:             "localhost:8080",
-	BasePath:         "/",
+	Host:             "",
+	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "URLProject",
 	Description:      "Project for shorting the URLS",
