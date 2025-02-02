@@ -5,10 +5,11 @@ import (
 	"URLProject/internal/entity"
 	"URLProject/internal/repository"
 	"URLProject/pkg/request"
-	"fmt"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type LinkServer struct {
@@ -39,7 +40,7 @@ func (ls *LinkServer) Create(ctx *gin.Context) {
 	}
 	link := entity.NewLink(linkRequest.Url)
 	for {
-		existedLink, _ := ls.linkRepository.Get(link.Hash)
+		existedLink, _ := ls.linkRepository.GetByHash(link.Hash)
 		if existedLink == nil {
 			break
 		}
@@ -67,7 +68,7 @@ func (ls *LinkServer) Create(ctx *gin.Context) {
 // @Router /link/{hash} [get]
 func (ls *LinkServer) GoTo(ctx *gin.Context) {
 	hash := ctx.Param("hash")
-	link, err := ls.linkRepository.Get(hash)
+	link, err := ls.linkRepository.GetByHash(hash)
 	if err != nil {
 		log.Printf("unable to get link by hash: %s", err)
 		ctx.Writer.WriteHeader(http.StatusInternalServerError)
@@ -86,7 +87,35 @@ func (ls *LinkServer) GoTo(ctx *gin.Context) {
 // @Failure 500 {object} string "internal server error"
 // @Router /link/{id} [patch]
 func (ls *LinkServer) Update(ctx *gin.Context) {
+	linkRequest, err := request.HandleBody[payload.LinkUpdateRequest](ctx)
+	if err != nil {
+		log.Printf("unable to get struct from body: %s", err)
+		ctx.Writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
+	idString := ctx.Param("id")
+	id, err := strconv.ParseUint(idString, 10, 32)
+	if err != nil {
+		log.Printf("unable to convert string id to int: %s", err)
+		ctx.Writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	link := &entity.Link{
+		Model: gorm.Model{
+			ID: uint(id),
+		},
+		Url:  linkRequest.Url,
+		Hash: linkRequest.Hash,
+	}
+	if err = ls.linkRepository.Update(link); err != nil {
+		log.Printf("unable to update the link by id(%d): %s", id, err)
+		ctx.Writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, link)
 }
 
 // @Summary Delete
@@ -99,6 +128,22 @@ func (ls *LinkServer) Update(ctx *gin.Context) {
 // @Failure 500 {object} string "internal server error"
 // @Router /link/{id} [delete]
 func (ls *LinkServer) Delete(ctx *gin.Context) {
-	id := ctx.Param("id")
-	fmt.Println(id)
+	idString := ctx.Param("id")
+	id, err := strconv.ParseUint(idString, 10, 32)
+	if err != nil {
+		log.Printf("unable to convert string id to int: %s", err)
+		ctx.Writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if err = ls.linkRepository.GetByID(uint(id)); err != nil {
+		log.Printf("unable to find link in db by id(%d): %s", id, err)
+		ctx.Writer.WriteHeader(http.StatusNotFound)
+		return
+	}
+	if err = ls.linkRepository.Delete(uint(id)); err != nil {
+		log.Printf("unable to delete link by id(%d): %s", id, err)
+		ctx.Writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 }
