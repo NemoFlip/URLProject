@@ -12,7 +12,7 @@ func main() {
 		panic(err)
 	}
 	database := db.NewDb(os.Getenv("DSN"))
-	if err := database.DB.AutoMigrate(&entity.Link{}); err != nil {
+	if err := database.DB.AutoMigrate(&entity.Link{}, &entity.User{}); err != nil {
 		panic(err)
 	}
 }

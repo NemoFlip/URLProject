@@ -3,6 +3,7 @@ package handlers
 import (
 	"URLProject/configs"
 	"URLProject/internal/delivery/payload"
+	"URLProject/internal/delivery/services"
 	"URLProject/pkg/request"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -12,14 +13,16 @@ import (
 
 type AuthServer struct {
 	*configs.Config
+	authService *services.AuthService
 }
 
 type AuthServerDeps struct {
 	*configs.Config
+	*services.AuthService
 }
 
 func NewAuthServer(deps AuthServerDeps) *AuthServer {
-	return &AuthServer{Config: deps.Config}
+	return &AuthServer{Config: deps.Config, authService: deps.AuthService}
 }
 
 // @Summary Register
@@ -39,7 +42,8 @@ func (as *AuthServer) RegisterUser(ctx *gin.Context) {
 		ctx.Writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	fmt.Println(requestStruct)
+	as.authService.Register(requestStruct.Email, requestStruct.Password, requestStruct.Name)
+	ctx.Writer.WriteHeader(http.StatusCreated)
 }
 
 // @Summary Login
