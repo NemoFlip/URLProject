@@ -4,8 +4,8 @@ import (
 	"URLProject/configs"
 	"URLProject/internal/delivery/payload"
 	"URLProject/internal/delivery/services"
+	"URLProject/pkg/jwt"
 	"URLProject/pkg/request"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -42,7 +42,11 @@ func (as *AuthServer) RegisterUser(ctx *gin.Context) {
 		ctx.Writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	as.authService.Register(requestStruct.Email, requestStruct.Password, requestStruct.Name)
+	if _, err = as.authService.Register(requestStruct.Email, requestStruct.Password, requestStruct.Name); err != nil {
+		log.Printf("unable to register user: %s", err)
+		ctx.Writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	ctx.Writer.WriteHeader(http.StatusCreated)
 }
 
@@ -59,14 +63,30 @@ func (as *AuthServer) RegisterUser(ctx *gin.Context) {
 func (as *AuthServer) LoginUser(ctx *gin.Context) {
 	requestStruct, err := request.HandleBody[payload.LoginRequest](ctx)
 	if err != nil {
-		log.Printf("unable to handle request body: %s", err)
+		log.Printf("unable to handle request body: %s\n", err)
 		ctx.Writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	fmt.Println(requestStruct)
+	email, err := as.authService.Login(requestStruct.Email, requestStruct.Password)
+	if err != nil {
+		log.Println(err)
+		ctx.Writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	jwtStruct := jwt.NewJWT(as.Config.Auth.SecretKey)
+
+	jwtToken, err := jwtStruct.Create(jwt.JWTPayload{
+		Email: email,
+	})
+	if err != nil {
+		log.Println(err)
+		ctx.Writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	resp := payload.LoginResponse{
-		Token: "098239d796sd862169y9&",
+		Token: jwtToken,
 	}
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, resp)

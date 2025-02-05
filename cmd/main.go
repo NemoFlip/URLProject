@@ -27,5 +27,5 @@ func main() {
 
 	linkServer := handlers.NewLinkServer(linkRepository)
 
-	delivery.StartServer(authServer, linkServer)
+	delivery.StartServer(authServer, linkServer, config)
 }

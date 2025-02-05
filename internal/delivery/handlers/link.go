@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"URLProject/internal/delivery/middleware"
 	"URLProject/internal/delivery/payload"
 	"URLProject/internal/entity"
 	"URLProject/internal/repository"
 	"URLProject/pkg/request"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"log"
@@ -94,6 +96,14 @@ func (ls *LinkServer) Update(ctx *gin.Context) {
 		log.Printf("unable to get struct from body: %s", err)
 		ctx.Writer.WriteHeader(http.StatusBadRequest)
 		return
+	}
+
+	if email, ok := ctx.Value(middleware.ContextEmailKey).(string); !ok {
+		log.Printf("unable to convert email to string from context: %s", err)
+		ctx.Writer.WriteHeader(http.StatusBadRequest)
+		return
+	} else {
+		fmt.Println(email)
 	}
 
 	idString := ctx.Param("id")
