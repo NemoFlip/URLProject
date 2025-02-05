@@ -43,3 +43,28 @@ func (lr *LinkRepository) GetByID(id uint) error {
 	result := lr.database.DB.First(&outputLink, id)
 	return result.Error
 }
+
+func (lr *LinkRepository) Count() int64 {
+	var count int64
+	_ = lr.database.DB.
+		Table("links").
+		Where("deleted_at is NULL").
+		Count(&count)
+	return count
+}
+
+func (lr *LinkRepository) GetAll(limit, offset int) ([]entity.Link, error) {
+	var links []entity.Link
+
+	result := lr.database.DB.
+		Table("links").
+		Where("deleted_at is NULL").
+		Order("id ASC").
+		Limit(limit).
+		Offset(offset).
+		Scan(&links)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return links, nil
+}
