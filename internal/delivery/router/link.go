@@ -14,5 +14,6 @@ func RegisterLinkRoutes(r *gin.Engine, linkServer *handlers.LinkServer, config *
 		linkGroup.PATCH("/:id", middleware.RequireAuthorization(config), linkServer.Update)
 		linkGroup.DELETE("/:id", linkServer.Delete)
 		linkGroup.GET("/:hash", linkServer.GoTo)
+		linkGroup.GET("", middleware.RequireAuthorization(config), linkServer.GetAll)
 	}
 }

@@ -1,5 +1,7 @@
 package payload
 
+import "URLProject/internal/entity"
+
 type LinkCreateRequest struct {
 	Url string `json:"url" validate:"required,url"`
 }
@@ -9,5 +11,7 @@ type LinkUpdateRequest struct {
 	Hash string `json:"hash"`
 }
 
-type LinkResponse struct {
+type GetAllLinksResponse struct {
+	Links []entity.Link `json:"links"`
+	Count int64         `json:"count"`
 }

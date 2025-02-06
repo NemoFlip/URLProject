@@ -3,6 +3,7 @@ package middleware
 import (
 	"URLProject/configs"
 	"URLProject/pkg/jwt"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -19,12 +20,14 @@ func RequireAuthorization(config *configs.Config) gin.HandlerFunc {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
-		token := strings.Trim(authHeader, "Bearer ")
+		token := strings.TrimPrefix(authHeader, "Bearer ")
+		fmt.Println(token)
 		isValid, data := jwt.NewJWT(config.Auth.SecretKey).Parse(token)
 		if !isValid {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
+		fmt.Println(token)
 		ctx.Set(ContextEmailKey, data.Email)
 		ctx.Next()
 	}

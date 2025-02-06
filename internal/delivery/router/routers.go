@@ -6,7 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InitRouting(r *gin.Engine, authServer *handlers.AuthServer, linkServer *handlers.LinkServer, config *configs.Config) {
+// TODO: implement routing deps
+func InitRouting(r *gin.Engine,
+	authServer *handlers.AuthServer,
+	linkServer *handlers.LinkServer,
+	statServer *handlers.StatServer,
+	config *configs.Config) {
 	RegisterAuthRoutes(r, authServer)
 	RegisterLinkRoutes(r, linkServer, config)
+	RegisterStatRouting(r, statServer, config)
 }

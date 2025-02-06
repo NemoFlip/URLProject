@@ -108,6 +108,60 @@ const docTemplate = `{
             }
         },
         "/link": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get all link by limit and offset",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Link"
+                ],
+                "summary": "GetAll",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Offset for pagination",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit for pagination",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "link was found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Create the link",
                 "consumes": [
@@ -135,7 +189,7 @@ const docTemplate = `{
                     "201": {
                         "description": "linke is created successfully",
                         "schema": {
-                            "$ref": "#/definitions/payload.LinkResponse"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -179,7 +233,7 @@ const docTemplate = `{
                     "200": {
                         "description": "linke was found",
                         "schema": {
-                            "$ref": "#/definitions/payload.LinkResponse"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -223,7 +277,7 @@ const docTemplate = `{
                     "200": {
                         "description": "linke is deleted successfully",
                         "schema": {
-                            "$ref": "#/definitions/payload.LinkResponse"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -270,7 +324,65 @@ const docTemplate = `{
                     "200": {
                         "description": "linke is updated successfully",
                         "schema": {
-                            "$ref": "#/definitions/payload.LinkResponse"
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "bad credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/stat": {
+            "get": {
+                "description": "Get statistics",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stat"
+                ],
+                "summary": "Statistics",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "From date",
+                        "name": "from",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "To date",
+                        "name": "to",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "month or day",
+                        "name": "by",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "all stats was found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
@@ -300,9 +412,6 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
-        },
-        "payload.LinkResponse": {
-            "type": "object"
         },
         "payload.LoginRequest": {
             "type": "object",

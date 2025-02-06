@@ -6,8 +6,6 @@ definitions:
     required:
     - url
     type: object
-  payload.LinkResponse:
-    type: object
   payload.LoginRequest:
     properties:
       email:
@@ -107,6 +105,41 @@ paths:
       tags:
       - Auth
   /link:
+    get:
+      description: Get all link by limit and offset
+      parameters:
+      - description: Offset for pagination
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Limit for pagination
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: link was found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: bad credentials
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: GetAll
+      tags:
+      - Link
     post:
       consumes:
       - application/json
@@ -124,7 +157,7 @@ paths:
         "201":
           description: linke is created successfully
           schema:
-            $ref: '#/definitions/payload.LinkResponse'
+            type: string
         "400":
           description: bad credentials
           schema:
@@ -153,7 +186,7 @@ paths:
         "200":
           description: linke was found
           schema:
-            $ref: '#/definitions/payload.LinkResponse'
+            type: string
         "400":
           description: bad credentials
           schema:
@@ -182,7 +215,7 @@ paths:
         "200":
           description: linke is deleted successfully
           schema:
-            $ref: '#/definitions/payload.LinkResponse'
+            type: string
         "400":
           description: bad credentials
           schema:
@@ -210,7 +243,7 @@ paths:
         "200":
           description: linke is updated successfully
           schema:
-            $ref: '#/definitions/payload.LinkResponse'
+            type: string
         "400":
           description: bad credentials
           schema:
@@ -224,6 +257,45 @@ paths:
       summary: Update
       tags:
       - Link
+  /stat:
+    get:
+      description: Get statistics
+      parameters:
+      - description: From date
+        in: query
+        name: from
+        required: true
+        type: string
+      - description: To date
+        in: query
+        name: to
+        required: true
+        type: string
+      - description: month or day
+        in: query
+        name: by
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: all stats was found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: bad credentials
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Statistics
+      tags:
+      - Stat
 securityDefinitions:
   BearerAuth:
     in: header
