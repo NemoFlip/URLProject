@@ -39,15 +39,15 @@ func (as *AuthServer) RegisterUser(ctx *gin.Context) {
 	requestStruct, err := request.HandleBody[payload.RegisterRequest](ctx)
 	if err != nil {
 		log.Printf("unable to handle request body: %s", err)
-		ctx.Writer.WriteHeader(http.StatusBadRequest)
+		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 	if _, err = as.authService.Register(requestStruct.Email, requestStruct.Password, requestStruct.Name); err != nil {
 		log.Printf("unable to register user: %s", err)
-		ctx.Writer.WriteHeader(http.StatusBadRequest)
+		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	ctx.Writer.WriteHeader(http.StatusCreated)
+	ctx.JSON(http.StatusCreated, gin.H{"message": "user registered successfully"})
 }
 
 // @Summary Login
@@ -64,30 +64,24 @@ func (as *AuthServer) LoginUser(ctx *gin.Context) {
 	requestStruct, err := request.HandleBody[payload.LoginRequest](ctx)
 	if err != nil {
 		log.Printf("unable to handle request body: %s\n", err)
-		ctx.Writer.WriteHeader(http.StatusBadRequest)
+		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 	email, err := as.authService.Login(requestStruct.Email, requestStruct.Password)
 	if err != nil {
 		log.Println(err)
-		ctx.Writer.WriteHeader(http.StatusBadRequest)
+		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
 	jwtStruct := jwt.NewJWT(as.Config.Auth.SecretKey)
-
-	jwtToken, err := jwtStruct.Create(jwt.JWTPayload{
-		Email: email,
-	})
+	jwtToken, err := jwtStruct.Create(jwt.JWTPayload{Email: email})
 	if err != nil {
 		log.Println(err)
-		ctx.Writer.WriteHeader(http.StatusInternalServerError)
+		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	resp := payload.LoginResponse{
-		Token: jwtToken,
-	}
-	ctx.Header("Content-Type", "application/json")
+	resp := payload.LoginResponse{Token: jwtToken}
 	ctx.JSON(http.StatusOK, resp)
 }
